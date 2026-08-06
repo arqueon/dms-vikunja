@@ -1,0 +1,43 @@
+{
+    "$schema": "https://github.com/AvengeMedia/DankMaterialShell/raw/refs/heads/master/PLUGINS/plugin-schema.json",
+    "id": "dmsVikunja",
+    "name": "dms-vikunja",
+    "description": "Manage Vikunja projects and tasks from DankBar",
+    "version": "0.1.0",
+    "author": "arqueon",
+    "repo": "https://github.com/arqueon/dms-vikunja",
+    "type": "composite",
+    "category": "productivity",
+    "icon": "task_alt",
+    "capabilities": [
+        "daemon",
+        "dankbar-widget",
+        "control-center",
+        "notifications"
+    ],
+    "components": {
+        "daemon": "./VikunjaDaemon.qml",
+        "widget": "./VikunjaWidget.qml"
+    },
+    "settings": "./Settings.qml",
+    "startupCheck": "./StartupCheck.qml",
+    "requires_dms": ">=1.5.0",
+    "distro": [
+        "any"
+    ],
+    "compositors": [
+        "any"
+    ],
+    "screenshot": "https://raw.githubusercontent.com/arqueon/dms-vikunja/main/assets/screenshot.png",
+    "dependencies": [
+        "python3",
+        "secret-tool",
+        "notify-send"
+    ],
+    "permissions": [
+        "settings_read",
+        "settings_write",
+        "process",
+        "network"
+    ]
+}
