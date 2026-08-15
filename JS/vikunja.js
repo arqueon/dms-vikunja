@@ -395,6 +395,8 @@ function pathsById(projects) {
 
 function filterAndSortTasks(tasks, projects, options) {
     var opts = options || {}
+    var viewPreset = String(opts.viewPreset || "all")
+    var now = opts.now === undefined ? Date.now() : Number(opts.now)
     var excluded = excludedSet(projects, opts.excludedProjectIds)
     var activeProjects = asId(opts.projectId) > 0
         ? descendantIds(projects, opts.projectId) : null
@@ -406,6 +408,11 @@ function filterAndSortTasks(tasks, projects, options) {
         if (activeProjects && !activeProjects[projectId]) return false
         if (!opts.showCompleted && task.done === true) return false
         if (activeLabel > 0 && labelIds(task).indexOf(activeLabel) === -1) return false
+        if (viewPreset === "due") {
+            var state = dueState(task, now)
+            if (state !== "overdue" && state !== "today") return false
+        }
+        if (viewPreset === "favorites" && task.is_favorite !== true) return false
         return matchesTask(task, opts.query, paths)
     })
     result.sort(function(a, b) { return compareTasks(a, b, opts.sortMode, paths) })

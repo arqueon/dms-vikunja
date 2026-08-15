@@ -3,7 +3,7 @@
     "id": "dmsVikunja",
     "name": "dms-vikunja",
     "description": "Manage Vikunja projects and tasks from DankBar",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "author": "arqueon",
     "repo": "https://github.com/arqueon/dms-vikunja",
     "type": "composite",
@@ -13,12 +13,15 @@
         "daemon",
         "dankbar-widget",
         "control-center",
-        "notifications"
+        "notifications",
+        "launcher"
     ],
     "components": {
         "daemon": "./VikunjaDaemon.qml",
-        "widget": "./VikunjaWidget.qml"
+        "widget": "./VikunjaWidget.qml",
+        "launcher": "./VikunjaLauncher.qml"
     },
+    "trigger": "vt",
     "settings": "./Settings.qml",
     "startupCheck": "./StartupCheck.qml",
     "requires_dms": ">=1.5.0",

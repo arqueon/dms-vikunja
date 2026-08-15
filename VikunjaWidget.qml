@@ -34,8 +34,15 @@ PluginComponent {
     readonly property int openTaskCount: Vikunja.openCount(tasks, projects, excludedProjectIds)
     readonly property int urgentTaskCount: Vikunja.dueCount(tasks, projects, excludedProjectIds, Date.now())
     readonly property bool pillHidden: hideWhenZero && configured && openTaskCount === 0
+    readonly property bool pillUrgent: errorMessage === "" && urgentTaskCount > 0
+    readonly property string pillIcon: errorMessage !== "" ? "sync_problem"
+        : pillUrgent ? "notification_important" : "task_alt"
+    readonly property color pillColor: errorMessage !== "" ? Theme.error
+        : pillUrgent ? Theme.error
+        : configured ? Theme.primary : Theme.surfaceVariantText
 
     property string activeView: "tasks"
+    property string activePreset: "all"
     property string searchQuery: ""
     property string labelQuery: ""
     property int activeProjectId: 0
@@ -49,8 +56,9 @@ PluginComponent {
 
     readonly property var filteredTasks: Vikunja.filterAndSortTasks(tasks, projects, {
         query: searchQuery,
-        projectId: activeProjectId,
+        projectId: activePreset === "project" ? activeProjectId : 0,
         labelId: activeLabelId,
+        viewPreset: activePreset,
         excludedProjectIds: excludedProjectIds,
         showCompleted: showCompleted,
         sortMode: sortMode
@@ -265,6 +273,12 @@ PluginComponent {
         return "Recently updated"
     }
 
+    function selectPreset(preset) {
+        if (preset === "project" && activeProjectId <= 0)
+            return
+        activePreset = preset
+    }
+
     function relativeUpdated() {
         if (!lastUpdated)
             return "never synced"
@@ -275,7 +289,11 @@ PluginComponent {
     }
 
     onProjectOptionsChanged: ensureQuickProject()
-    onActiveProjectIdChanged: ensureQuickProject()
+    onActiveProjectIdChanged: {
+        ensureQuickProject()
+        if (activeProjectId <= 0 && activePreset === "project")
+            activePreset = "all"
+    }
 
     horizontalBarPill: Component {
         Item {
@@ -289,10 +307,9 @@ PluginComponent {
                 anchors.verticalCenter: parent.verticalCenter
 
                 DankIcon {
-                    name: root.errorMessage !== "" ? "sync_problem" : "task_alt"
+                    name: root.pillIcon
                     size: root.iconSize
-                    color: root.errorMessage !== "" ? Theme.error
-                        : root.configured ? Theme.primary : Theme.surfaceVariantText
+                    color: root.pillColor
                 }
 
                 NumericText {
@@ -302,7 +319,7 @@ PluginComponent {
                     width: reservedWidth
                     font.pixelSize: Theme.fontSizeSmall
                     font.weight: Font.Bold
-                    color: Theme.primary
+                    color: root.pillColor
                     horizontalAlignment: Text.AlignHCenter
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -323,10 +340,9 @@ PluginComponent {
 
                 DankIcon {
                     anchors.horizontalCenter: parent.horizontalCenter
-                    name: root.errorMessage !== "" ? "sync_problem" : "task_alt"
+                    name: root.pillIcon
                     size: root.iconSize
-                    color: root.errorMessage !== "" ? Theme.error
-                        : root.configured ? Theme.primary : Theme.surfaceVariantText
+                    color: root.pillColor
                 }
 
                 NumericText {
@@ -337,7 +353,7 @@ PluginComponent {
                     width: reservedWidth
                     font.pixelSize: Theme.fontSizeSmall
                     font.weight: Font.Bold
-                    color: Theme.primary
+                    color: root.pillColor
                     horizontalAlignment: Text.AlignHCenter
                 }
             }
@@ -587,28 +603,70 @@ PluginComponent {
 
                             Flow {
                                 width: parent.width
-                                visible: root.activeProjectId > 0 || root.activeLabelId > 0
                                 spacing: Theme.spacingXS
 
-                                Rectangle {
-                                    visible: root.activeProjectId > 0
-                                    width: activeProjectText.implicitWidth + Theme.spacingM * 2
-                                    height: 28
-                                    radius: 14
-                                    color: Theme.withAlpha(Theme.primary, 0.2)
-                                    StyledText {
-                                        id: activeProjectText
-                                        anchors.centerIn: parent
-                                        text: root.projectPathForId(root.activeProjectId) + "  ×"
-                                        font.pixelSize: Theme.fontSizeSmall
-                                        color: Theme.primary
+                                Repeater {
+                                    model: {
+                                        var presets = [
+                                            { id: "all", label: "All", icon: "inbox" },
+                                            { id: "due", label: "Today + overdue", icon: "notification_important" },
+                                            { id: "favorites", label: "Favorites", icon: "star" }
+                                        ]
+                                        if (root.activeProjectId > 0)
+                                            presets.push({
+                                                id: "project",
+                                                label: root.projectPathForId(root.activeProjectId),
+                                                icon: "account_tree"
+                                            })
+                                        return presets
                                     }
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: root.activeProjectId = 0
+
+                                    delegate: Rectangle {
+                                        required property var modelData
+                                        readonly property bool selected: root.activePreset === modelData.id
+                                        width: presetRow.implicitWidth + Theme.spacingM * 2
+                                        height: 30
+                                        radius: 15
+                                        color: selected ? Theme.withAlpha(Theme.primary, 0.22)
+                                            : presetArea.containsMouse
+                                                ? Theme.surfaceContainerHighest : Theme.surfaceContainerHigh
+                                        border.width: selected ? 1 : 0
+                                        border.color: Theme.withAlpha(Theme.primary, 0.55)
+
+                                        Row {
+                                            id: presetRow
+                                            anchors.centerIn: parent
+                                            spacing: Theme.spacingXS
+
+                                            DankIcon {
+                                                name: modelData.icon
+                                                size: 16
+                                                color: parent.parent.selected ? Theme.primary : Theme.surfaceText
+                                            }
+
+                                            StyledText {
+                                                text: modelData.label
+                                                font.pixelSize: Theme.fontSizeSmall
+                                                font.weight: parent.parent.selected ? Font.Bold : Font.Normal
+                                                color: parent.parent.selected ? Theme.primary : Theme.surfaceText
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            id: presetArea
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: root.selectPreset(parent.modelData.id)
+                                        }
                                     }
                                 }
+                            }
+
+                            Flow {
+                                width: parent.width
+                                visible: root.activeLabelId > 0
+                                spacing: Theme.spacingXS
 
                                 Rectangle {
                                     visible: root.activeLabelId > 0
@@ -930,6 +988,7 @@ PluginComponent {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
                                         root.activeProjectId = parent.modelData.id
+                                        root.activePreset = "project"
                                         root.activeView = "tasks"
                                     }
                                 }

@@ -18,7 +18,7 @@ const tasks = [
     { id: 10, project_id: 2, title: "Ship", priority: 4, done: false,
       due_date: "2026-08-05T18:00:00Z", labels: [{ id: 7, title: "urgent" }] },
     { id: 11, project_id: 3, title: "Water plants", priority: 1, done: false,
-      due_date: "0001-01-01T00:00:00Z", labels: [] },
+      due_date: "0001-01-01T00:00:00Z", labels: [], is_favorite: true },
     { id: 12, project_id: 1, title: "Closed", priority: 5, done: true,
       due_date: "2026-08-01T18:00:00Z", labels: [] }
 ]
@@ -52,6 +52,17 @@ assert.deepEqual(Array.from(filtered, task => task.id), [10])
 
 filtered = context.filterAndSortTasks(tasks, projects, {
     excludedProjectIds: [1], showCompleted: true, sortMode: "title"
+})
+assert.deepEqual(Array.from(filtered, task => task.id), [11])
+
+filtered = context.filterAndSortTasks(tasks, projects, {
+    viewPreset: "due", now: Date.parse("2026-08-05T17:00:00Z"),
+    showCompleted: false, sortMode: "smart"
+})
+assert.deepEqual(Array.from(filtered, task => task.id), [10])
+
+filtered = context.filterAndSortTasks(tasks, projects, {
+    viewPreset: "favorites", showCompleted: false, sortMode: "title"
 })
 assert.deepEqual(Array.from(filtered, task => task.id), [11])
 

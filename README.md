@@ -7,6 +7,8 @@
 ## Features
 
 - Open-task count and due/overdue state in horizontal and vertical DankBars.
+- Accessible urgency state in the bar and task rows: icon, wording, border, and color agree.
+- One-click task views for all, today/overdue, favorites, and the active project.
 - One shared daemon, so multiple bars do not poll Vikunja independently.
 - Nested project paths and project filtering that includes descendants.
 - Searchable hierarchical project picker that gives the project name priority and shows its parent path separately.
@@ -25,6 +27,7 @@
 - Searchable label selector for accounts with long label lists.
 - Explicit, two-step task deletion and a shortcut to open the task in Vikunja.
 - Deduplicated desktop notifications for tasks entering the due-soon window or becoming overdue.
+- Optional launcher quick add: type `vt` followed by a title to create a task in the configured default project.
 - Persistent cache for a useful read-only view during transient network failures.
 - Automatic API selection: v1 for Vikunja 2.3 and earlier, v2 for Vikunja 2.4 and later.
 
@@ -93,7 +96,7 @@ The implementation follows Vikunja's [API documentation](https://vikunja.io/docs
 
 ## Current scope
 
-Version 0.1.0 manages the task fields and non-destructive attachment workflow needed for a fast bar experience. Attachment deletion, project creation/deletion, comments, assignees, relations, recurring-task rules, and Kanban bucket moves remain in the full Vikunja interface.
+Version 0.2.0 adds accessible urgency states, saved task-view presets, and the optional `vt` launcher quick-add surface while retaining the task fields and non-destructive attachment workflow needed for a fast bar experience. Attachment deletion, project creation/deletion, comments, assignees, relations, recurring-task rules, and Kanban bucket moves remain in the full Vikunja interface.
 
 Due dates accept `YYYY-MM-DD` or `YYYY-MM-DD HH:mm` in the local timezone. A date without a time defaults to 23:59.
 
