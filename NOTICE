@@ -1,0 +1,9 @@
+dms-vikunja third-party asset notice
+====================================
+
+Images/vikunja-monochrome.svg is a vector trace of the official monochrome
+Vikunja badge:
+https://github.com/go-vikunja/vikunja/blob/main/frontend/originalMedia/icons/badge-monochrome.png
+
+The upstream repository distributes this asset under AGPL-3.0-or-later.
+The dms-vikunja plugin code remains MIT licensed as described in LICENSE.

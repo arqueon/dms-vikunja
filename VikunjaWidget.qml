@@ -34,11 +34,7 @@ PluginComponent {
     readonly property int openTaskCount: Vikunja.openCount(tasks, projects, excludedProjectIds)
     readonly property int urgentTaskCount: Vikunja.dueCount(tasks, projects, excludedProjectIds, Date.now())
     readonly property bool pillHidden: hideWhenZero && configured && openTaskCount === 0
-    readonly property bool pillUrgent: errorMessage === "" && urgentTaskCount > 0
-    readonly property string pillIcon: errorMessage !== "" ? "sync_problem"
-        : pillUrgent ? "notification_important" : "task_alt"
     readonly property color pillColor: errorMessage !== "" ? Theme.error
-        : pillUrgent ? Theme.error
         : configured ? Theme.primary : Theme.surfaceVariantText
 
     property string activeView: "tasks"
@@ -306,10 +302,11 @@ PluginComponent {
                 spacing: Theme.spacingXS
                 anchors.verticalCenter: parent.verticalCenter
 
-                DankIcon {
-                    name: root.pillIcon
+                VikunjaIcon {
                     size: root.iconSize
-                    color: root.pillColor
+                    iconColor: root.pillColor
+                    iconOpacity: root.configured ? 1.0 : 0.55
+                    anchors.verticalCenter: parent.verticalCenter
                 }
 
                 NumericText {
@@ -338,11 +335,11 @@ PluginComponent {
                 spacing: 1
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                DankIcon {
+                VikunjaIcon {
                     anchors.horizontalCenter: parent.horizontalCenter
-                    name: root.pillIcon
                     size: root.iconSize
-                    color: root.pillColor
+                    iconColor: root.pillColor
+                    iconOpacity: root.configured ? 1.0 : 0.55
                 }
 
                 NumericText {

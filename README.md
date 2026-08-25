@@ -7,7 +7,7 @@
 ## Features
 
 - Open-task count and due/overdue state in horizontal and vertical DankBars.
-- Accessible urgency state in the bar and task rows: icon, wording, border, and color agree.
+- Official monochrome Vikunja badge in the bar, optically scaled and tinted with Matugen's primary theme color; sync errors retain the semantic error color, while urgency remains explicit through icon, wording, border, and color in task rows.
 - One-click task views for all, today/overdue, favorites, and the active project.
 - One shared daemon, so multiple bars do not poll Vikunja independently.
 - Nested project paths and project filtering that includes descendants.

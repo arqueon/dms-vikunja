@@ -1,0 +1,9 @@
+<!-- Monochrome Vikunja badge silhouette.
+     Vector trace of the official badge-monochrome.png asset:
+     https://github.com/go-vikunja/vikunja/blob/main/frontend/originalMedia/icons/badge-monochrome.png
+     The upstream asset is distributed under AGPL-3.0-or-later. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52.197563 121.471954" preserveAspectRatio="xMidYMid meet">
+  <g transform="translate(-39.639531,122) scale(.1,-.1)" fill="#fff" stroke="none">
+    <path d="M458 1191c-19-17-40-47-46-68-6-21-12-112-14-203-4-316-5-307 32-395l33-80-7-140c-3-77-9-170-13-207l-6-66 44-13c67-20 262-17 332 4 52 16 58 21 53 40-16 67-38 232-39 302-1 73 3 88 38 165l39 85-4 140c-5 187-4 193 11 248 10 37 10 58 0 99-13 59-53 118-80 118-15 0-19-11-24-67-4-38-7-85-7-105 0-20-4-39-8-42-5-3-39 0-75 6-46 7-86 8-128 1l-61-10 3 106c4 102 3 106-18 109-12 2-35-9-55-27z"/>
+  </g>
+</svg>
