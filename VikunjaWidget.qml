@@ -12,7 +12,7 @@ PluginComponent {
     readonly property int barLabelSize: Theme.barTextSize(barThickness, barConfig ? barConfig.fontScale : undefined, barConfig ? barConfig.maximizeWidgetText : undefined)
 
     property var popoutService: null
-    readonly property var daemon: PluginService.pluginInstances["dmsVikunja"] ?? null
+    readonly property var daemon: PluginService.pluginDaemonInstances["dmsVikunja"] ?? null
     readonly property var tasks: tasksGlobal.value || []
     readonly property var projects: projectsGlobal.value || []
     readonly property var labels: labelsGlobal.value || []

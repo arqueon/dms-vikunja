@@ -11,9 +11,9 @@ Item {
     signal itemsChanged()
 
     function daemonInstance() {
-        if (!pluginService || !pluginService.pluginInstances)
+        if (!pluginService || !pluginService.pluginDaemonInstances)
             return null
-        return pluginService.pluginInstances[pluginId] || null
+        return pluginService.pluginDaemonInstances[pluginId] || null
     }
 
     function defaultProjectId() {

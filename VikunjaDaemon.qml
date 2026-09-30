@@ -405,21 +405,8 @@ PluginComponent {
     }
 
     Component.onCompleted: {
-        if (pluginService && pluginId) {
-            var instances = Object.assign({}, pluginService.pluginInstances)
-            instances[pluginId] = root
-            pluginService.pluginInstances = instances
-        }
         Qt.callLater(loadState)
     }
 
     onPluginServiceChanged: Qt.callLater(loadState)
-
-    Component.onDestruction: {
-        if (pluginService && pluginService.pluginInstances[pluginId] === root) {
-            var instances = Object.assign({}, pluginService.pluginInstances)
-            delete instances[pluginId]
-            pluginService.pluginInstances = instances
-        }
-    }
 }
