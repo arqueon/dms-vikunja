@@ -3,7 +3,7 @@
     "id": "dmsVikunja",
     "name": "dms-vikunja",
     "description": "Manage Vikunja projects and tasks from DankBar",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "author": "arqueon",
     "repo": "https://github.com/arqueon/dms-vikunja",
     "type": "composite",

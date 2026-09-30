@@ -9,6 +9,7 @@ import "./JS/vikunja.js" as Vikunja
 
 PluginComponent {
     id: root
+    readonly property int barLabelSize: Theme.barTextSize(barThickness, barConfig ? barConfig.fontScale : undefined, barConfig ? barConfig.maximizeWidgetText : undefined)
 
     property var popoutService: null
     readonly property var daemon: PluginService.pluginInstances["dmsVikunja"] ?? null
@@ -35,7 +36,8 @@ PluginComponent {
     readonly property int urgentTaskCount: Vikunja.dueCount(tasks, projects, excludedProjectIds, Date.now())
     readonly property bool pillHidden: hideWhenZero && configured && openTaskCount === 0
     readonly property color pillColor: errorMessage !== "" ? Theme.error
-        : configured ? Theme.primary : Theme.surfaceVariantText
+        : !configured ? Theme.surfaceVariantText
+        : openTaskCount > 0 ? Theme.primary : Theme.widgetIconColor
 
     property string activeView: "tasks"
     property string activePreset: "all"
@@ -314,7 +316,7 @@ PluginComponent {
                     text: root.openTaskCount > 99 ? "99+" : String(root.openTaskCount)
                     reserveText: "99+"
                     width: reservedWidth
-                    font.pixelSize: Theme.fontSizeSmall
+                    font.pixelSize: root.barLabelSize
                     font.weight: Font.Bold
                     color: root.pillColor
                     horizontalAlignment: Text.AlignHCenter
@@ -332,7 +334,7 @@ PluginComponent {
 
             Column {
                 id: verticalContent
-                spacing: 1
+                spacing: Theme.spacingXXS
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 VikunjaIcon {
@@ -348,7 +350,7 @@ PluginComponent {
                     text: root.openTaskCount > 99 ? "99+" : String(root.openTaskCount)
                     reserveText: "99+"
                     width: reservedWidth
-                    font.pixelSize: Theme.fontSizeSmall
+                    font.pixelSize: root.barLabelSize
                     font.weight: Font.Bold
                     color: root.pillColor
                     horizontalAlignment: Text.AlignHCenter
@@ -387,14 +389,14 @@ PluginComponent {
                     Rectangle {
                         width: 32
                         height: 32
-                        radius: 16
+                        radius: Theme.cornerRadius
                         color: addHeaderArea.containsMouse
                             ? Theme.withAlpha(Theme.primary, 0.22) : "transparent"
 
                         DankIcon {
                             anchors.centerIn: parent
                             name: "add_task"
-                            size: 20
+                            size: Theme.iconSizeSmall + Theme.spacingXS
                             color: Theme.primary
                         }
 
@@ -415,14 +417,14 @@ PluginComponent {
                     Rectangle {
                         width: 32
                         height: 32
-                        radius: 16
+                        radius: Theme.cornerRadius
                         color: refreshHeaderArea.containsMouse
                             ? Theme.withAlpha(Theme.primary, 0.22) : "transparent"
 
                         DankIcon {
                             anchors.centerIn: parent
                             name: root.isLoading ? "sync" : "refresh"
-                            size: 20
+                            size: Theme.iconSizeSmall + Theme.spacingXS
                             color: root.isLoading ? Theme.primary : Theme.surfaceText
                         }
 
@@ -483,7 +485,7 @@ PluginComponent {
 
                                 DankIcon {
                                     name: modelData.icon
-                                    size: 17
+                                    size: Theme.iconSizeSmall
                                     color: parent.parent.selected ? Theme.primary : Theme.surfaceText
                                 }
 
@@ -547,7 +549,7 @@ PluginComponent {
                                     Row {
                                         anchors.centerIn: parent
                                         spacing: Theme.spacingXS
-                                        DankIcon { name: "sort"; size: 16; color: Theme.surfaceText }
+                                        DankIcon { name: "sort"; size: Theme.iconSizeSmall; color: Theme.surfaceText }
                                         StyledText {
                                             text: root.sortLabel(root.sortMode)
                                             font.pixelSize: Theme.fontSizeSmall
@@ -578,7 +580,7 @@ PluginComponent {
                                         spacing: Theme.spacingXS
                                         DankIcon {
                                             name: root.showCompleted ? "visibility" : "visibility_off"
-                                            size: 16
+                                            size: Theme.iconSizeSmall
                                             color: root.showCompleted ? Theme.primary : Theme.surfaceText
                                         }
                                         StyledText {
@@ -623,7 +625,7 @@ PluginComponent {
                                         readonly property bool selected: root.activePreset === modelData.id
                                         width: presetRow.implicitWidth + Theme.spacingM * 2
                                         height: 30
-                                        radius: 15
+                                        radius: Theme.cornerRadius
                                         color: selected ? Theme.withAlpha(Theme.primary, 0.22)
                                             : presetArea.containsMouse
                                                 ? Theme.surfaceContainerHighest : Theme.surfaceContainerHigh
@@ -637,7 +639,7 @@ PluginComponent {
 
                                             DankIcon {
                                                 name: modelData.icon
-                                                size: 16
+                                                size: Theme.iconSizeSmall
                                                 color: parent.parent.selected ? Theme.primary : Theme.surfaceText
                                             }
 
@@ -669,7 +671,7 @@ PluginComponent {
                                     visible: root.activeLabelId > 0
                                     width: activeLabelText.implicitWidth + Theme.spacingM * 2
                                     height: 28
-                                    radius: 14
+                                    radius: Theme.cornerRadius
                                     color: Theme.withAlpha(Theme.primary, 0.2)
                                     StyledText {
                                         id: activeLabelText
@@ -761,7 +763,7 @@ PluginComponent {
                                                     root.quickLabelIds.indexOf(parseInt(modelData.id)) !== -1
                                                 width: quickLabelText.implicitWidth + Theme.spacingM * 2
                                                 height: 27
-                                                radius: 14
+                                                radius: Theme.cornerRadius
                                                 color: selected
                                                     ? Theme.withAlpha(
                                                         Vikunja.labelColor(modelData) || Theme.primary, 0.35)
@@ -927,7 +929,7 @@ PluginComponent {
                                     anchors.verticalCenter: parent.verticalCenter
                                     width: 24
                                     height: 24
-                                    radius: 5
+                                    radius: Theme.cornerRadius / 3
                                     color: parent.included
                                         ? Theme.withAlpha(Theme.primary, 0.2) : "transparent"
                                     border.width: 2
@@ -937,7 +939,7 @@ PluginComponent {
                                         anchors.centerIn: parent
                                         visible: parent.parent.included
                                         name: "check"
-                                        size: 16
+                                        size: Theme.iconSizeSmall
                                         color: Theme.primary
                                     }
 
@@ -1058,7 +1060,7 @@ PluginComponent {
                                     anchors.verticalCenter: parent.verticalCenter
                                     width: 16
                                     height: 16
-                                    radius: 8
+                                    radius: Theme.cornerRadius
                                     color: Vikunja.labelColor(modelData) || Theme.primary
                                 }
 
