@@ -135,11 +135,10 @@ Rectangle {
                 onClicked: attachmentDialog.open()
             }
 
-            BusyIndicator {
+            DankSpinner {
                 visible: root.busy
                 running: visible
-                width: 24
-                height: 24
+                size: Theme.iconSize
                 anchors.verticalCenter: parent.verticalCenter
             }
 
