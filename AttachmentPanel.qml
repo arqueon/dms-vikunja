@@ -132,7 +132,7 @@ Rectangle {
                 iconName: "upload_file"
                 buttonHeight: 30
                 enabled: !root.busy
-                onClicked: attachmentDialog.open()
+                onClicked: root.openFileDialog()
             }
 
             DankSpinner {
@@ -150,6 +150,31 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
+    }
+
+    function openFileDialog() {
+        Proc.runCommand(
+            "dmsVikunja.fileChooser",
+            ["sh", "-c", "if command -v zenity >/dev/null 2>&1; then zenity --file-selection --multiple --separator='|||' --title='Attach files to task'; elif command -v kdialog >/dev/null 2>&1; then kdialog --multiple --separate-output --title 'Attach files to task' --getopenfilename ~ | tr '\\n' '|||'; else exit 127; fi"],
+            (stdout, exitCode) => {
+                if (exitCode === 0 && stdout && stdout.trim().length > 0) {
+                    var raw = stdout.trim().split("|||")
+                    var files = []
+                    for (var i = 0; i < raw.length; i++) {
+                        var p = raw[i].trim()
+                        if (p.length > 0)
+                            files.push(p.startsWith("file://") ? p : ("file://" + p))
+                    }
+                    if (files.length > 0)
+                        root.uploadRequested(files)
+                } else if (exitCode === 127) {
+                    attachmentDialog.open()
+                }
+            },
+            0,
+            -1,
+            root
+        )
     }
 
     FileDialog {
