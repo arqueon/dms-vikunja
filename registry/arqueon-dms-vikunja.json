@@ -11,7 +11,7 @@
     "repo": "https://github.com/arqueon/dms-vikunja",
     "author": "arqueon",
     "description": "Manage Vikunja projects and tasks from DankBar with nested project and label views, due dates, priorities, attachments, and notifications.",
-    "version": "0.1.0",
+    "version": "0.2.5",
     "type": "composite",
     "icon": "task_alt",
     "components": {
